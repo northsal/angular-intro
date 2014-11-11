@@ -1,32 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <!-- hotlink to Bootstrap CDN -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
-        <link rel="stylesheet" href="css/main.css"/>
-        <title>Angular Demo</title>
+    <!-- hotlink to Bootstrap CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/main.css"/>
+    <title>Angular Demo</title>
 
-        <!-- local version of AngularJS, unminified so that you can read it -->
-        <!-- This is loaded here instead of at the end of the body so that all the template syntax below will
-            be hidden while the data is loaded out of the js/movies-2014.js file. If you put this at the end
-            of the body instead, the user would see the template syntax briefly appear on the screen before
-            the data was loaded and merged with the template -->
-        <script src="lib/angular-1.3.1/angular.js"></script>
+    <!-- local version of AngularJS, unminified so that you can read it -->
+    <!-- This is loaded here instead of at the end of the body so that all the template syntax below will
+        be hidden while the data is loaded out of the js/movies-2014.js file. If you put this at the end
+        of the body instead, the user would see the template syntax briefly appear on the screen before
+        the data was loaded and merged with the template -->
+    <script src="lib/angular-1.3.1/angular.js"></script>
 
-    </head>
-    <body>
-        <main class="container">
-            <h1>Movies from 2014</h1>
+</head>
+<body>
+<main class="container" ng-app="AngularDemo">
+    <section ng-controller="HelloController">
+        <h1>Introduce Yourself</h1>
 
-        </main>
+        <p><input type="text" class="'form-controller"
+                  placeholder="enter your first name" ng-model="person.firstName"/></p>
 
-        <!-- 2014 movie box office data (http://www.the-numbers.com/market/2014/top-grossing-movies) -->
-        <script src="js/movies-2014.js"></script>
+        <p><input type="text" class="'form-controller"
+                  placeholder="enter your last name" ng-model="person.lastName"/></p>
 
-        <!-- our application -->
-        <script src="js/app.js"></script>
-    </body>
+        <p>Hello {{person.firstName}} {{person.lastName}}</p>
+
+    </section>
+
+    <section ng-controller="MoviesController">
+        <h1>Movies from 2014</h1>
+
+        <p><input type="search" class="form-control" placeholder="search for a title"
+                  ng-model="searchString"/></p>
+
+        <p>{{filteredMovies.length}} {{1 == filteredMovies.length ? 'movie' : 'movies'}}</p>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th ng-click="sortBy('title')" ng-class="{sorted: isSortedBy('title')}">Title</th>
+                <th ng-click="sortBy('grossSales')" ng-class="{sorted: isSortedBy('grossSales')}">Sales</th>
+                <th ng-click="sortBy('ticketsSold')" ng-class="{sorted: isSortedBy('ticketsSold')}">Tickets</th>
+                <th ng-click="sortBy('genre')" ng-class="{sorted: isSortedBy('genre')}">Genres</th>
+                <th ng-click="sortBy('rating')" ng-class="{sorted: isSortedBy('rating')}">Ratings</th>
+                <th ng-click="sortBy('rank')" ng-class="{sorted: isSortedBy('rank')}">Rank</th>
+                <th ng-click="sortBy('releaseDate')" ng-class="{sorted: isSortedBy('releaseDate')}">Release Dates</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- search in specific part: {___: searchString}-->
+            <tr ng-repeat="movie in filteredMovies = (movies
+                        | filter : {title: searchString}
+                        | orderBy : sortCol : sortReverse)">
+                <td>{{movie.title}}</td>
+                <!-- currency symbol : decimal places -->
+                <td>{{movie.grossSales | currency : '$' : 0}}</td>
+                <td>{{movie.ticketsSold | number}}</td>
+                <td>{{movie.genre}}</td>
+                <td>{{movie.rating}}</td>
+                <td>{{movie.rank}}</td>
+                <td>{{movie.releaseDate}}</td>
+            </tr>
+
+            </tbody>
+        </table>
+
+    </section>
+
+</main>
+
+<!-- 2014 movie box office data (http://www.the-numbers.com/market/2014/top-grossing-movies) -->
+<script src="js/movies-2014.js"></script>
+
+<!-- our application -->
+<script src="js/app.js"></script>
+</body>
 </html>
